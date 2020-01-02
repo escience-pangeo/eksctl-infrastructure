@@ -48,14 +48,15 @@ jobs:
         run: |
           RUNNERIP=`curl --silent http://checkip.amazonaws.com`
           aws --version
-          aws eks update-cluster-config --name pangeo --resources-vpc-config publicAccessCidrs=$RUNNERIP/32
+          aws eks update-cluster-config --name pangeo --resources-vpc-config publicAccessCidrs=$RUNNERIP/32 &> output.json
           # better to poll for readiness https://docs.aws.amazon.com/eks/latest/userguide/cluster-endpoint.html
           sleep 30
       - name: Get info on running pods
         run: |
-          aws eks update-kubeconfig --name pangeo
+          aws eks update-kubeconfig --name pangeo &> output.json
           kubectl get pods --all-namespaces
       - name: Remove runner IP from Kubernetes API Whitelist
         run: |
           # need to keep at least 1 IP in list
-          aws eks update-cluster-config --name pangeo --resources-vpc-config publicAccessCidrs="${{ secrets.IP_WHITELIST }}"
+          # !!CAREFUL!! aws cli commands can output secrets in plain text to stdout, so redirect to output.json
+          aws eks update-cluster-config --name pangeo --resources-vpc-config publicAccessCidrs="${{ secrets.IP_WHITELIST }}" &> output.json
