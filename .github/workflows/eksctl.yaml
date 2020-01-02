@@ -53,6 +53,7 @@ jobs:
           sleep 30
       - name: Get info on running pods
         run: |
+          aws eks update-kubeconfig --name pangeo
           kubectl get pods --all-namespaces
       - name: Remove runner IP from Kubernetes API Whitelist
         run: |
