@@ -21,7 +21,7 @@ jobs:
       - name: Install awscli 1.16.309
         run: |
           # required for aws --profile circleci eks describe-cluster --name pangeo (publicAccessCidrs)
-          pip install -U awscli=1.16.309
+          pip install -U awscli==1.16.309
           aws --version
       - name: Install eksctl 0.11.1
         run: |
