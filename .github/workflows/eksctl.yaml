@@ -17,7 +17,7 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-west-2
+          aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
         # Use python virtual environment for specific awscli version
       - name: Set Up Python 3.7
         uses: actions/setup-python@v1
@@ -58,4 +58,4 @@ jobs:
       - name: Remove runner IP from Kubernetes API Whitelist
         run: |
           # need to keep at least 1 IP in list
-          aws eks update-cluster-config --name pangeo --resources-vpc-config publicAccessCidrs="174.21.142.69/32"
+          aws eks update-cluster-config --name pangeo --resources-vpc-config publicAccessCidrs="${{ secrets.IP_WHITELIST }}"
