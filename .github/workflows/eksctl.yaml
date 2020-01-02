@@ -50,12 +50,13 @@ jobs:
           aws --version
           aws eks update-cluster-config --name pangeo --resources-vpc-config publicAccessCidrs=$RUNNERIP/32 &> output.json
           # better to poll for readiness https://docs.aws.amazon.com/eks/latest/userguide/cluster-endpoint.html
-          sleep 30
-      - name: Get info on running pods
+          sleep 60
+      - name: Get Pods
         run: |
           aws eks update-kubeconfig --name pangeo &> output.json
           kubectl get pods --all-namespaces
-      - name: Remove runner IP from Kubernetes API Whitelist
+      - name: Revert to Original Kubernetes API Whitelist
+        if: always()
         run: |
           # need to keep at least 1 IP in list
           # !!CAREFUL!! aws cli commands can output secrets in plain text to stdout, so redirect to output.json
